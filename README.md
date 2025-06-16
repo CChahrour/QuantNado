@@ -13,12 +13,6 @@ git clone https://github.com/YOUR_USERNAME/QuantNado.git
 cd QuantNado
 pip install -e .
 ```
-Or:
-
-```bash
-pip install quantnado
-
-```
 
 ## 🚀 Usage
 
