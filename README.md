@@ -1,6 +1,6 @@
 # QuantNado
 
-**QuantNado** is a quantile-based peak caller for CUT&Tag RPKM-scaled bigWig files. It tiles the genome, extracts log1p-transformed signal, and outputs BED files of high-signal regions using quantile thresholding.
+**QuantNado** is a quantile-based peak caller for CUT&Tag RPKM-scaled bigWig files. It tiles the genome, extracts log1p-transformed signal, and outputs BED files of high-signal regions using quantile thresholding. It also outputs log RPKM as a parquet file 
 
 ---
 
