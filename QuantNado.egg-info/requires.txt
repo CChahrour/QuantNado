@@ -1,7 +1,8 @@
+crested
+loguru
 numpy
 pandas
 pyranges
-crested
 torch
 
 [dev]

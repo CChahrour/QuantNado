@@ -7,10 +7,11 @@ License-Expression: MIT
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: crested
+Requires-Dist: loguru
 Requires-Dist: numpy
 Requires-Dist: pandas
 Requires-Dist: pyranges
-Requires-Dist: crested
 Requires-Dist: torch
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"
