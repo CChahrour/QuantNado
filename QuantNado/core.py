@@ -8,7 +8,7 @@ import pyranges as pr
 from crested import import_bigwigs
 from loguru import logger
 
-logger.add(sys.stderr, level="INFO") 
+logger.add(sys.stderr, level="INFO", format="{time} [{level}] {message}")
 
 
 def call_quantile_peaks(

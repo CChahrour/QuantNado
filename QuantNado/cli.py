@@ -1,7 +1,10 @@
 import argparse
 import sys
+
 from loguru import logger
+
 from .core import call_peaks_from_bigwig
+
 
 def main():
     parser = argparse.ArgumentParser(

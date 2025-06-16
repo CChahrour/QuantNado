@@ -11,14 +11,16 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"  # Fix the warning by using SPDX string instead of table
+license = "MIT"
 
 dependencies = [
+    "crested",
+    "loguru",
     "numpy",
     "pandas",
     "pyranges",
-    "crested",
     "torch",
+
 ]
 
 [project.optional-dependencies]
