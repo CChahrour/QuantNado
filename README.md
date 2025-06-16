@@ -19,12 +19,12 @@ pip install -e .
 ```bash
 QuantNado \
   --bigwig path/to/file.bw \
-  --output-dir output/ \
+  --output-dir path/to/output/ \
   --chromsizes path/to/hg38.chrom.sizes \
   # Optional parameters:
   --blacklist path/to/hg38-blacklist.bed \
   --tilesize 128 \
   --quantile 0.98 \
   --min-peak-length 128 \
-  --tmp-dir $TMPDIR
+  --tmp-dir path/to/temp
 ```
