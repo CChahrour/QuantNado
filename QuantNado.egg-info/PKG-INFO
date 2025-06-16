@@ -3,6 +3,7 @@ Name: QuantNado
 Version: 0.1.0
 Summary: Quantile-based peak calling from RPKM bigWig files
 Author-email: Catherine Chahrour <your.email@example.com>
+License-Expression: MIT
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
@@ -10,7 +11,9 @@ Requires-Dist: numpy
 Requires-Dist: pandas
 Requires-Dist: pyranges
 Requires-Dist: crested
-Requires-Dist: pyBigWig
+Requires-Dist: torch
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
 Dynamic: license-file
 
 # QuantNado
@@ -27,12 +30,6 @@ Install from source:
 git clone https://github.com/YOUR_USERNAME/QuantNado.git
 cd QuantNado
 pip install -e .
-```
-Or:
-
-```bash
-pip install quantnado
-
 ```
 
 ## 🚀 Usage

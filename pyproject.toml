@@ -3,25 +3,31 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "quantnado"
+name = "QuantNado"
 version = "0.1.0"
 description = "Quantile-based peak calling from RPKM bigWig files"
-authors = [{ name = "Catherine Chahrour", email = "catherine.chahrour@msdtc.ox.ac.uk" }]
+authors = [
+    { name = "Catherine Chahrour", email = "your.email@example.com" }
+]
 readme = "README.md"
-requires-python = ">=3.11"
-license = { file = "LICENSE" }
+requires-python = ">=3.8"
+license = "MIT"  # Fix the warning by using SPDX string instead of table
 
 dependencies = [
     "numpy",
     "pandas",
     "pyranges",
     "crested",
-    "pyBigWig",
-    "loguru",
+    "torch",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pytest",
+]
 
 [project.scripts]
-quantnado = "QuantNado.cli:main"
+QuantNado = "QuantNado.cli:main"
+
+[tool.setuptools]
+packages = ["QuantNado"]
