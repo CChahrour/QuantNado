@@ -23,6 +23,5 @@ QuantNado \
   --blacklist path/to/hg38-blacklist.bed \
   --tilesize 128 \
   --quantile 0.98 \
-  --min-peak-length 128 \
   --tmp-dir path/to/temp
 ```
