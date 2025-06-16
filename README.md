@@ -6,12 +6,10 @@
 
 ## 📦 Installation
 
-Install from source:
+Install using pip:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/QuantNado.git
-cd QuantNado
-pip install -e .
+pip install quantnado
 ```
 
 ## 🚀 Usage
