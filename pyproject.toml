@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantnado"
+version = "0.1.0"
+description = "Quantile-based peak calling from RPKM bigWig files"
+authors = [{ name = "Catherine Chahrour", email = "catherine.chahrour@msdtc.ox.ac.uk" }]
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyranges",
+    "crested",
+    "pyBigWig",
+    "loguru",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+quantnado = "QuantNado.cli:main"

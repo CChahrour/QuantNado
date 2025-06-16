@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+QuantNado/__init__.py
+QuantNado/cli.py
+QuantNado/core.py
+QuantNado.egg-info/PKG-INFO
+QuantNado.egg-info/SOURCES.txt
+QuantNado.egg-info/dependency_links.txt
+QuantNado.egg-info/entry_points.txt
+QuantNado.egg-info/requires.txt
+QuantNado.egg-info/top_level.txt

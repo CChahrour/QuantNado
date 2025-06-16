@@ -1,0 +1,5 @@
+numpy
+pandas
+pyranges
+crested
+pyBigWig
