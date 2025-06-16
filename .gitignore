@@ -1,4 +1,4 @@
 my_test/
 *.bed
 *.ipynb
-QuantNado.egg-info
+QuantNado.egg-info/
