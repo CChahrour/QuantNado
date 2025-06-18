@@ -1,5 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0", "setuptools_scm"]
+requires = [
+    "setuptools >= 61.0",
+    "wheel",
+    "setuptools_scm[toml]>=6.2",
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,7 +15,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
-version = { use_scm = true } 
+dynamic = ["version"]
 
 dependencies = [
     "crested",
@@ -30,9 +34,9 @@ dev = [
 [project.scripts]
 QuantNado = "QuantNado.cli:main"
 
+[tool.setuptools_scm]
+write_to = "QuantNado/_version.py"
+local_scheme = "no-local-version"
+
 [tool.setuptools]
 packages = ["QuantNado"]
-
-[tool.setuptools_scm]
-version_scheme = "post-release"
-local_scheme = "no-local-version"
