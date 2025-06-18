@@ -16,7 +16,6 @@ def test_call_quantile_peaks_basic():
         ends=ends,
         tilesize=100,
         quantile=0.95,
-        min_peak_length=100,
         blacklist_file=None,
     )
 
