@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -19,7 +19,6 @@ dependencies = [
     "pandas",
     "pyranges",
     "torch",
-
 ]
 
 [project.optional-dependencies]
@@ -32,3 +31,7 @@ QuantNado = "QuantNado.cli:main"
 
 [tool.setuptools]
 packages = ["QuantNado"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
