@@ -11,6 +11,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
+version = { use_scm = true } 
 
 dependencies = [
     "crested",
@@ -31,7 +32,6 @@ QuantNado = "QuantNado.cli:main"
 
 [tool.setuptools]
 packages = ["QuantNado"]
-version = { use_scm = true }
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
