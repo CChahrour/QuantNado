@@ -1,6 +1,7 @@
 import pandas as pd
 from QuantNado.core import call_quantile_peaks
 
+
 def test_call_quantile_peaks_basic():
     # Toy signal with a clear high value
     signal = pd.Series([0, 1, 5, 10, 1, 0], name="test_sample")
