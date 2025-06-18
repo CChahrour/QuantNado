@@ -31,6 +31,7 @@ QuantNado = "QuantNado.cli:main"
 
 [tool.setuptools]
 packages = ["QuantNado"]
+version = { use_scm = true }
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
