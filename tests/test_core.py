@@ -1,5 +1,5 @@
 import pandas as pd
-from QuantNado.core import call_quantile_peaks
+from QuantNado.call_quantile_peaks import call_quantile_peaks
 
 
 def test_call_quantile_peaks_basic():
