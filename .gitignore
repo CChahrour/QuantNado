@@ -3,3 +3,5 @@ my_test/
 *.ipynb
 QuantNado.egg-info/
 *__pycache__/
+data/
+*.sh

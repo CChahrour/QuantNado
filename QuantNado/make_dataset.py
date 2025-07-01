@@ -1,4 +1,5 @@
 import tempfile
+import warnings
 from pathlib import Path
 
 import pandas as pd
@@ -49,15 +50,23 @@ def make_dataset(
         tmp_filtered = tempfile.NamedTemporaryFile(
             delete=False, suffix=".bed", mode="w"
         )
-        filtered.saveas(tmp_filtered.name)
+        filtered.to_bed(tmp_filtered.name)
         regions_bed = tmp_filtered.name
 
-    adata = import_bigwigs(
-        regions_file=regions_bed,
-        bigwigs_folder=bigwig_dir,
-        chromsizes_file=chromsizes_file,
-        target="mean",
-    ).T
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Variable names are not unique*"
+        )
+        adata = import_bigwigs(
+            regions_file=regions_bed,
+            bigwigs_folder=bigwig_dir,
+            chromsizes_file=chromsizes_file,
+            target="mean",
+        )
+
+    adata.var_names_make_unique()
+    adata = adata.T
 
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)
     adata.write_h5ad(output_file)
