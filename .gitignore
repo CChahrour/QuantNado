@@ -5,3 +5,4 @@ QuantNado.egg-info/
 *__pycache__/
 data/
 *.sh
+QuantNado/_version.py
