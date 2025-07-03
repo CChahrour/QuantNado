@@ -1,6 +1,6 @@
 import warnings
-warnings.filterwarnings("ignore", message="pkg_resources*")
 
+warnings.filterwarnings("ignore", message="pkg_resources*")
 
 import argparse
 import sys
@@ -14,14 +14,22 @@ from QuantNado.make_dataset import make_dataset
 
 def call_peaks_main():
     parser = argparse.ArgumentParser(description="Call quantile-based peaks from bigWig files")
-    parser.add_argument("--bigwig-dir", required=True)
-    parser.add_argument("--output-dir", required=True, type=Path)
-    parser.add_argument("--chromsizes", required=True)
-    parser.add_argument("--blacklist", default=None)
-    parser.add_argument("--tilesize", type=int, default=128)
-    parser.add_argument("--quantile", type=float, default=0.98)
-    parser.add_argument("--merge", action="store_true")
-    parser.add_argument("--tmp-dir", default="tmp")
+    parser.add_argument("--bigwig-dir", required=True, type=Path,
+                        help="Directory containing bigWig files")
+    parser.add_argument("--output-dir", required=True, type=Path,
+                        help="Directory to save output peak files (BED format)")
+    parser.add_argument("--chromsizes", required=True, help="Path to a two-column chromsizes file (chromosome, size)")
+    parser.add_argument("--blacklist", default=None, help="Path to a BED file with regions to exclude")
+    parser.add_argument("--tilesize", type=int, default=128,
+                        help="Size of genomic tiles to create (default: 128 bp)")
+    parser.add_argument("--quantile", type=float, default=0.98,
+                        help="Quantile threshold for peak calling (default: 0.98)")
+    parser.add_argument("--merge", action="store_true",
+                        help="Merge overlapping peaks after quantile calling (default: False)")
+    parser.add_argument("--tmp-dir", default="tmp", type=Path,
+                        help="Temporary directory for intermediate files (default: 'tmp')")
+    parser.add_argument("--threads", type=int, default=None,
+                        help="Number of threads to use for processing (default: all but one)")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -33,20 +41,25 @@ def call_peaks_main():
         blacklist_file=args.blacklist,
         tilesize=args.tilesize,
         quantile=args.quantile,
-        tmp_dir=args.tmp_dir,
         merge=args.merge,
+        tmp_dir=args.tmp_dir,
+        n_threads=args.threads,
     )
     sys.exit(0 if result else 1)
 
 
 def make_dataset_main():
     parser = argparse.ArgumentParser(description="Generate an AnnData or MuData dataset from bigWigs")
-    parser.add_argument("--bigwig-dir", required=True)
-    parser.add_argument("--output-file", required=True)
-    parser.add_argument("--chromsizes", required=True)
-    parser.add_argument("--regions", default=None)
-    parser.add_argument("--binsize", type=int, default=128)
-    parser.add_argument("--blacklist", default=None)
+    parser.add_argument("--bigwig-dir", required=True, type=Path,
+                        help="Directory containing bigWig files")
+    parser.add_argument("--output-file", required=True, type=Path,
+                        help="Output file path for the dataset (AnnData with .h5ad extension)")
+    parser.add_argument("--chromsizes", required=True, help="Path to a two-column chromsizes file (chromosome, size)")
+    parser.add_argument("--regions", default=None, help="Path to a BED file with regions to use")
+    parser.add_argument("--binsize", type=int, default=128, help="Size of genomic bins to create")
+    parser.add_argument("--blacklist", default=None, help="Path to a BED file with regions to exclude")
+    parser.add_argument("--threads", type=int, default=None,
+                        help="Number of threads to use for processing (default: all but one)")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 
