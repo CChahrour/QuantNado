@@ -28,8 +28,6 @@ def call_peaks_main():
                         help="Merge overlapping peaks after quantile calling (default: False)")
     parser.add_argument("--tmp-dir", default="tmp", type=Path,
                         help="Temporary directory for intermediate files (default: 'tmp')")
-    parser.add_argument("--threads", type=int, default=None,
-                        help="Number of threads to use for processing (default: all but one)")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -43,7 +41,6 @@ def call_peaks_main():
         quantile=args.quantile,
         merge=args.merge,
         tmp_dir=args.tmp_dir,
-        n_threads=args.threads,
     )
     sys.exit(0 if result else 1)
 
@@ -58,8 +55,6 @@ def make_dataset_main():
     parser.add_argument("--regions", default=None, help="Path to a BED file with regions to use")
     parser.add_argument("--binsize", type=int, default=128, help="Size of genomic bins to create")
     parser.add_argument("--blacklist", default=None, help="Path to a BED file with regions to exclude")
-    parser.add_argument("--threads", type=int, default=None,
-                        help="Number of threads to use for processing (default: all but one)")
     parser.add_argument("-v", "--verbose", action="store_true")
     args = parser.parse_args()
 

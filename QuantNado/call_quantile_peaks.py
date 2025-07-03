@@ -1,4 +1,3 @@
-from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from typing import Optional
 
@@ -63,58 +62,6 @@ def call_quantile_peaks(
     return pr_obj if len(pr_obj) > 0 else None
 
 
-def _process_sample(args):
-    """Wrapper to process one bigWig file."""
-    (
-        sample_path,
-        tiled_df,
-        chromsizes_file,
-        blacklist_file,
-        tilesize,
-        quantile,
-        output_dir,
-    ) = args
-    sample_name = sample_path.stem
-
-    logger.info(f"Processing sample: {sample_name}")
-    tmp_bed = output_dir / f"{sample_name}.tiled_regions.bed"
-
-    # Save tiled regions to temporary BED file
-    pr.PyRanges(tiled_df).to_bed(tmp_bed)
-
-    try:
-        adata = import_bigwigs(
-            regions_file=str(tmp_bed),
-            bigwigs_folder=str(sample_path.parent),
-            chromsizes_file=str(chromsizes_file),
-            include_files=[sample_path.name],
-            target="mean",
-        )
-        signal = np.log1p(adata.X.squeeze())
-    except Exception as e:
-        logger.error(f"[{sample_name}] Failed to load or process: {e}")
-        return None
-
-    pr_obj = call_quantile_peaks(
-        signal=pd.Series(signal, name=sample_name),
-        chroms=tiled_df["Chromosome"],
-        starts=tiled_df["Start"],
-        ends=tiled_df["End"],
-        tilesize=tilesize,
-        quantile=quantile,
-        blacklist_file=blacklist_file,
-    )
-
-    if pr_obj is not None:
-        output_bed = output_dir / f"{sample_name}.bed"
-        pr_obj.to_bed(output_bed)
-        logger.success(f"Peak BED saved to: [{output_bed}]")
-        return str(output_bed)
-    else:
-        logger.warning(f"[{sample_name}] No peaks detected.")
-        return None
-
-
 def call_peaks_from_bigwig_dir(
     bigwig_dir: Path,
     output_dir: Path,
@@ -123,34 +70,31 @@ def call_peaks_from_bigwig_dir(
     tilesize: int = 128,
     quantile: float = 0.98,
     tmp_dir: Path = Path("tmp"),
-    n_threads: Optional[int] = None,
 ) -> list[str]:
-    """Call quantile-based peaks from all bigWig files in a directory, in parallel."""
+    """Call quantile-based peaks from all bigWig files in a directory."""
     bigwig_dir = Path(bigwig_dir)
     output_dir = Path(output_dir)
     chromsizes_file = Path(chromsizes_file)
     blacklist_file = Path(blacklist_file) if blacklist_file else None
     tmp_dir = Path(tmp_dir)
-    n_threads = n_threads or max(cpu_count() - 1, 1)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     chromsizes = (
-        pd.read_csv(chromsizes_file, sep="\t", names=["Chromosome", "End"], usecols=[0, 1])
+        pd.read_csv(chromsizes_file, sep="\t", names=["Chromosome", "End"])
         .query("~Chromosome.str.contains('_')", engine="python")
         .assign(Start=0)[["Chromosome", "Start", "End"]]
     )
 
     logger.info(f"Tiling genome with tilesize {tilesize} bp...")
     full_ranges = pr.PyRanges(chromsizes)
-    tiled = full_ranges.tile(tilesize).intersect(full_ranges)
-
-    if blacklist_file and blacklist_file.exists():
+    tiled = full_ranges.tile(tilesize)
+    tiled = tiled.intersect(full_ranges)
+    if blacklist_file and Path(blacklist_file).exists():
         logger.info(f"Applying blacklist from: {blacklist_file}")
         blacklist = pr.read_bed(str(blacklist_file))
         tiled = tiled.subtract(blacklist)
-
     tiled_df = tiled.df
     tmp_regions_bed = tmp_dir / "tiled_regions.bed"
     tiled.to_bed(tmp_regions_bed)
@@ -160,26 +104,45 @@ def call_peaks_from_bigwig_dir(
     if not bigwig_paths:
         logger.error(f"No .bw or .bigWig files found in {bigwig_dir}")
         return []
-
     logger.info(f"Found {len(bigwig_paths)} bigWig file(s)")
-    logger.info(f"Processing in parallel with {n_threads} threads...")
+    logger.info("Importing all bigWig signals...")
 
-    args_list = [
-        (
-            path,
-            tiled_df.copy(),
-            chromsizes_file,
-            blacklist_file,
-            tilesize,
-            quantile,
-            output_dir,
+    
+    adata = import_bigwigs(
+        regions_file=str(tmp_regions_bed),
+        bigwigs_folder=str(bigwig_dir),
+        chromsizes_file=str(chromsizes_file),
+        target="mean",
+    )
+
+    adata.X = np.log1p(adata.X)
+    df = adata.T.to_df().reset_index()
+    df.to_parquet(output_dir / f"logged_rpkm_{tilesize}bp.parquet", index=False)
+    sample_names = df.columns[1:]
+
+    results = []
+    for i, sample_name in enumerate(sample_names):
+        logger.info(f"Processing sample: {sample_name}")
+        signal = df[sample_name]
+
+        pr_obj = call_quantile_peaks(
+            signal=signal,
+            chroms=tiled_df["Chromosome"],
+            starts=tiled_df["Start"],
+            ends=tiled_df["End"],
+            tilesize=tilesize,
+            quantile=quantile,
+            blacklist_file=blacklist_file,
         )
-        for path in bigwig_paths
-    ]
 
-    with Pool(n_threads) as pool:
-        result_paths = pool.map(_process_sample, args_list)
+        if pr_obj is not None:
+            output_bed = output_dir / f"{sample_name}.bed"
+            pr_obj.to_bed(output_bed)
+            logger.success(f"Peak BED saved to: [{output_bed}]")
+            results.append(str(output_bed))
+        else:
+            logger.warning(f"[{sample_name}] No peaks detected.")
 
-    result_paths = [r for r in result_paths if r is not None]
-    logger.info(f"Finished processing {len(result_paths)} samples.")
-    return result_paths
+    return results
+
+
