@@ -6,3 +6,4 @@ QuantNado.egg-info/
 data/
 *.sh
 QuantNado/_version.py
+logs/
