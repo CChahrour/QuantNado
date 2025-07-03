@@ -137,7 +137,7 @@ def call_peaks_from_bigwig_dir(
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     chromsizes = (
-        pd.read_csv(chromsizes_file, sep="\t", names=["Chromosome", "End"])
+        pd.read_csv(chromsizes_file, sep="\t", names=["Chromosome", "End"], usecols=[0, 1])
         .query("~Chromosome.str.contains('_')", engine="python")
         .assign(Start=0)[["Chromosome", "Start", "End"]]
     )
